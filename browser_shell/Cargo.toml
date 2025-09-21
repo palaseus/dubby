@@ -1,0 +1,21 @@
+[package]
+name = "browser_shell"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+dom = { path = "../dom" }
+html_parser = { path = "../html_parser" }
+css_parser = { path = "../css_parser" }
+layout = { path = "../layout" }
+renderer = { path = "../renderer" }
+networking = { path = "../networking" }
+renderer_wgpu = { path = "../renderer_wgpu" }
+# js_integration = { path = "../js_integration" }
+tokio = { version = "1.0", features = ["full"] }
+
+# HTTP client for real web fetching
+reqwest = { version = "0.11", features = ["json"] }
+url = "2.4"

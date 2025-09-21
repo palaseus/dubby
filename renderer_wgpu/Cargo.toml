@@ -1,0 +1,19 @@
+[package]
+name = "renderer_wgpu"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+layout = { path = "../layout" }
+dom = { path = "../dom" }
+html_parser = { path = "../html_parser" }
+css_parser = { path = "../css_parser" }
+winit = "0.29"
+wgpu = "0.19"
+pollster = "0.3"
+wgpu_glyph = "0.26"
+bytemuck = { version = "1.0", features = ["derive"] }
+thiserror = "1.0"
+tokio = { version = "1.0", features = ["full"] }

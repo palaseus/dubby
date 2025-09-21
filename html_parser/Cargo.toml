@@ -1,0 +1,11 @@
+[package]
+name = "html_parser"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+dom = { path = "../dom" }
+encoding_rs = "0.8"
+thiserror = "1.0"

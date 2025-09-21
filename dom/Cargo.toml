@@ -1,0 +1,13 @@
+[package]
+name = "dom"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# No external dependencies for now - keeping it minimal
+
+[[bin]]
+name = "test_event_system"
+path = "src/bin/test_event_system.rs"

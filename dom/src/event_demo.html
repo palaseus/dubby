@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event System Demo - Bubbling, Capturing & Delegation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .demo-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+        }
+        
+        .demo-section h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        
+        .event-log {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .button:hover {
+            background: #0056b3;
+        }
+        
+        .button:active {
+            background: #004085;
+        }
+        
+        .nested-container {
+            background: #e9ecef;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .stats {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Event System Demo</h1>
+        <p>This demo showcases event bubbling, capturing, and delegation in our browser engine.</p>
+        
+        <!-- Event Bubbling Demo -->
+        <div class="demo-section">
+            <h2>1. Event Bubbling Demo</h2>
+            <p>Click the buttons to see event bubbling in action. Events bubble up from child to parent.</p>
+            
+            <div id="bubbling-container" class="nested-container">
+                <div id="bubbling-parent" class="nested-container">
+                    <div id="bubbling-child" class="nested-container">
+                        <button id="bubbling-button" class="button">Click Me (Bubbling)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="event-log" id="bubbling-log"></div>
+        </div>
+        
+        <!-- Event Capturing Demo -->
+        <div class="demo-section">
+            <h2>2. Event Capturing Demo</h2>
+            <p>Click the button to see event capturing. Events are captured on the way down from parent to child.</p>
+            
+            <div id="capturing-container" class="nested-container">
+                <div id="capturing-parent" class="nested-container">
+                    <div id="capturing-child" class="nested-container">
+                        <button id="capturing-button" class="button">Click Me (Capturing)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="event-log" id="capturing-log"></div>
+        </div>
+        
+        <!-- Event Delegation Demo -->
+        <div class="demo-section">
+            <h2>3. Event Delegation Demo</h2>
+            <p>Click any button to see event delegation. The parent handles events for all child buttons.</p>
+            
+            <div id="delegation-container" class="nested-container">
+                <button class="delegated-button button" data-action="save">Save</button>
+                <button class="delegated-button button" data-action="cancel">Cancel</button>
+                <button class="delegated-button button" data-action="delete">Delete</button>
+                <button class="delegated-button button" data-action="edit">Edit</button>
+            </div>
+            
+            <div class="event-log" id="delegation-log"></div>
+        </div>
+        
+        <!-- Input Events Demo -->
+        <div class="demo-section">
+            <h2>4. Input Events Demo</h2>
+            <p>Type in the input field to see input, focus, and blur events.</p>
+            
+            <input type="text" id="input-field" class="input-field" placeholder="Type something here...">
+            <button id="clear-input" class="button">Clear Input</button>
+            
+            <div class="event-log" id="input-log"></div>
+        </div>
+        
+        <!-- Keyboard Events Demo -->
+        <div class="demo-section">
+            <h2>5. Keyboard Events Demo</h2>
+            <p>Press keys to see keyboard events. Try Enter, Escape, and arrow keys.</p>
+            
+            <input type="text" id="keyboard-field" class="input-field" placeholder="Press keys here...">
+            
+            <div class="event-log" id="keyboard-log"></div>
+        </div>
+        
+        <!-- Custom Events Demo -->
+        <div class="demo-section">
+            <h2>6. Custom Events Demo</h2>
+            <p>Click the button to dispatch a custom event.</p>
+            
+            <button id="custom-event-button" class="button">Dispatch Custom Event</button>
+            
+            <div class="event-log" id="custom-log"></div>
+        </div>
+        
+        <!-- Performance Stats -->
+        <div class="demo-section">
+            <h2>7. Performance Statistics</h2>
+            <div class="stats" id="performance-stats">
+                <div>Event Dispatches: <span id="dispatch-count">0</span></div>
+                <div>Average Dispatch Time: <span id="avg-dispatch-time">0</span>μs</div>
+                <div>Max Dispatch Time: <span id="max-dispatch-time">0</span>μs</div>
+                <div>Delegation Cache Hit Rate: <span id="cache-hit-rate">0</span>%</div>
+            </div>
+            
+            <button id="stress-test" class="button">Run Stress Test (1000 events)</button>
+            <div class="event-log" id="stress-log"></div>
+        </div>
+        
+        <!-- Error Display -->
+        <div id="error-display" class="error" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Event logging utility
+        function logEvent(logId, message) {
+            const log = document.getElementById(logId);
+            if (log) {
+                const timestamp = new Date().toLocaleTimeString();
+                log.innerHTML += `[${timestamp}] ${message}\n`;
+                log.scrollTop = log.scrollHeight;
+            }
+        }
+        
+        // Clear log utility
+        function clearLog(logId) {
+            const log = document.getElementById(logId);
+            if (log) {
+                log.innerHTML = '';
+            }
+        }
+        
+        // Error handling
+        function showError(message) {
+            const errorDiv = document.getElementById('error-display');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Performance tracking
+        let performanceStats = {
+            dispatchCount: 0,
+            totalDispatchTime: 0,
+            maxDispatchTime: 0,
+            cacheHits: 0,
+            cacheMisses: 0
+        };
+        
+        function updatePerformanceStats() {
+            document.getElementById('dispatch-count').textContent = performanceStats.dispatchCount;
+            document.getElementById('avg-dispatch-time').textContent = 
+                performanceStats.dispatchCount > 0 ? 
+                Math.round(performanceStats.totalDispatchTime / performanceStats.dispatchCount) : 0;
+            document.getElementById('max-dispatch-time').textContent = performanceStats.maxDispatchTime;
+            
+            const totalCacheRequests = performanceStats.cacheHits + performanceStats.cacheMisses;
+            const hitRate = totalCacheRequests > 0 ? 
+                Math.round((performanceStats.cacheHits / totalCacheRequests) * 100) : 0;
+            document.getElementById('cache-hit-rate').textContent = hitRate;
+        }
+        
+        // Event Bubbling Setup
+        function setupBubblingDemo() {
+            const container = document.getElementById('bubbling-container');
+            const parent = document.getElementById('bubbling-parent');
+            const child = document.getElementById('bubbling-child');
+            const button = document.getElementById('bubbling-button');
+            
+            if (container && parent && child && button) {
+                // Add event listeners for bubbling
+                container.addEventListener('click', function(event) {
+                    logEvent('bubbling-log', `Container clicked (bubbling) - target: ${event.target.id}`);
+                });
+                
+                parent.addEventListener('click', function(event) {
+                    logEvent('bubbling-log', `Parent clicked (bubbling) - target: ${event.target.id}`);
+                });
+                
+                child.addEventListener('click', function(event) {
+                    logEvent('bubbling-log', `Child clicked (bubbling) - target: ${event.target.id}`);
+                });
+                
+                button.addEventListener('click', function(event) {
+                    logEvent('bubbling-log', `Button clicked (bubbling) - target: ${event.target.id}`);
+                });
+            }
+        }
+        
+        // Event Capturing Setup
+        function setupCapturingDemo() {
+            const container = document.getElementById('capturing-container');
+            const parent = document.getElementById('capturing-parent');
+            const child = document.getElementById('capturing-child');
+            const button = document.getElementById('capturing-button');
+            
+            if (container && parent && child && button) {
+                // Add event listeners for capturing
+                container.addEventListener('click', function(event) {
+                    logEvent('capturing-log', `Container clicked (capturing) - target: ${event.target.id}`);
+                }, true); // capture = true
+                
+                parent.addEventListener('click', function(event) {
+                    logEvent('capturing-log', `Parent clicked (capturing) - target: ${event.target.id}`);
+                }, true); // capture = true
+                
+                child.addEventListener('click', function(event) {
+                    logEvent('capturing-log', `Child clicked (capturing) - target: ${event.target.id}`);
+                }, true); // capture = true
+                
+                button.addEventListener('click', function(event) {
+                    logEvent('capturing-log', `Button clicked (capturing) - target: ${event.target.id}`);
+                }, true); // capture = true
+            }
+        }
+        
+        // Event Delegation Setup
+        function setupDelegationDemo() {
+            const container = document.getElementById('delegation-container');
+            
+            if (container) {
+                // Use event delegation - parent handles all child button clicks
+                container.addEventListener('click', function(event) {
+                    if (event.target.classList.contains('delegated-button')) {
+                        const action = event.target.getAttribute('data-action');
+                        logEvent('delegation-log', `Delegated click on ${action} button - target: ${event.target.textContent}`);
+                        
+                        // Simulate different actions
+                        switch(action) {
+                            case 'save':
+                                logEvent('delegation-log', 'Action: Saving data...');
+                                break;
+                            case 'cancel':
+                                logEvent('delegation-log', 'Action: Cancelling operation...');
+                                break;
+                            case 'delete':
+                                logEvent('delegation-log', 'Action: Deleting item...');
+                                break;
+                            case 'edit':
+                                logEvent('delegation-log', 'Action: Opening editor...');
+                                break;
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Input Events Setup
+        function setupInputDemo() {
+            const inputField = document.getElementById('input-field');
+            const clearButton = document.getElementById('clear-input');
+            
+            if (inputField) {
+                inputField.addEventListener('focus', function(event) {
+                    logEvent('input-log', `Input focused - value: "${event.target.value}"`);
+                });
+                
+                inputField.addEventListener('blur', function(event) {
+                    logEvent('input-log', `Input blurred - value: "${event.target.value}"`);
+                });
+                
+                inputField.addEventListener('input', function(event) {
+                    logEvent('input-log', `Input changed - value: "${event.target.value}"`);
+                });
+            }
+            
+            if (clearButton) {
+                clearButton.addEventListener('click', function() {
+                    if (inputField) {
+                        inputField.value = '';
+                        logEvent('input-log', 'Input cleared');
+                    }
+                });
+            }
+        }
+        
+        // Keyboard Events Setup
+        function setupKeyboardDemo() {
+            const keyboardField = document.getElementById('keyboard-field');
+            
+            if (keyboardField) {
+                keyboardField.addEventListener('keydown', function(event) {
+                    logEvent('keyboard-log', `Key down: ${event.key} (code: ${event.code}, keyCode: ${event.keyCode})`);
+                    
+                    // Special key handling
+                    if (event.key === 'Enter') {
+                        logEvent('keyboard-log', 'Enter key pressed - submitting form');
+                    } else if (event.key === 'Escape') {
+                        logEvent('keyboard-log', 'Escape key pressed - cancelling operation');
+                    }
+                });
+                
+                keyboardField.addEventListener('keyup', function(event) {
+                    logEvent('keyboard-log', `Key up: ${event.key}`);
+                });
+            }
+        }
+        
+        // Custom Events Setup
+        function setupCustomEventDemo() {
+            const customButton = document.getElementById('custom-event-button');
+            
+            if (customButton) {
+                // Listen for custom event
+                customButton.addEventListener('myCustomEvent', function(event) {
+                    logEvent('custom-log', `Custom event received: ${event.detail}`);
+                });
+                
+                // Dispatch custom event on click
+                customButton.addEventListener('click', function(event) {
+                    const customEvent = new CustomEvent('myCustomEvent', {
+                        detail: 'Hello from custom event!',
+                        bubbles: true
+                    });
+                    
+                    logEvent('custom-log', 'Dispatching custom event...');
+                    event.target.dispatchEvent(customEvent);
+                });
+            }
+        }
+        
+        // Stress Test Setup
+        function setupStressTest() {
+            const stressButton = document.getElementById('stress-test');
+            
+            if (stressButton) {
+                stressButton.addEventListener('click', function() {
+                    logEvent('stress-log', 'Starting stress test...');
+                    clearLog('stress-log');
+                    
+                    const startTime = performance.now();
+                    let eventCount = 0;
+                    
+                    // Create 1000 synthetic events
+                    for (let i = 0; i < 1000; i++) {
+                        const event = new Event('test');
+                        const dispatchStart = performance.now();
+                        
+                        // Simulate event dispatch
+                        document.dispatchEvent(event);
+                        
+                        const dispatchEnd = performance.now();
+                        const dispatchTime = dispatchEnd - dispatchStart;
+                        
+                        performanceStats.dispatchCount++;
+                        performanceStats.totalDispatchTime += dispatchTime;
+                        performanceStats.maxDispatchTime = Math.max(performanceStats.maxDispatchTime, dispatchTime);
+                        
+                        eventCount++;
+                        
+                        // Update progress every 100 events
+                        if (eventCount % 100 === 0) {
+                            logEvent('stress-log', `Processed ${eventCount} events...`);
+                        }
+                    }
+                    
+                    const endTime = performance.now();
+                    const totalTime = endTime - startTime;
+                    
+                    logEvent('stress-log', `Stress test completed!`);
+                    logEvent('stress-log', `Total events: ${eventCount}`);
+                    logEvent('stress-log', `Total time: ${totalTime.toFixed(2)}ms`);
+                    logEvent('stress-log', `Average time per event: ${(totalTime / eventCount).toFixed(4)}ms`);
+                    
+                    updatePerformanceStats();
+                });
+            }
+        }
+        
+        // Initialize all demos
+        function initializeDemos() {
+            try {
+                setupBubblingDemo();
+                setupCapturingDemo();
+                setupDelegationDemo();
+                setupInputDemo();
+                setupKeyboardDemo();
+                setupCustomEventDemo();
+                setupStressTest();
+                
+                logEvent('bubbling-log', 'Bubbling demo initialized');
+                logEvent('capturing-log', 'Capturing demo initialized');
+                logEvent('delegation-log', 'Delegation demo initialized');
+                logEvent('input-log', 'Input demo initialized');
+                logEvent('keyboard-log', 'Keyboard demo initialized');
+                logEvent('custom-log', 'Custom event demo initialized');
+                logEvent('stress-log', 'Stress test ready');
+                
+                console.log('All event demos initialized successfully');
+            } catch (error) {
+                showError('Error initializing demos: ' + error.message);
+                console.error('Demo initialization error:', error);
+            }
+        }
+        
+        // Start when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeDemos);
+        } else {
+            initializeDemos();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+[package]
+name = "layout"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+dom = { path = "../dom" }
+css_parser = { path = "../css_parser" }

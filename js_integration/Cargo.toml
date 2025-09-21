@@ -1,0 +1,19 @@
+[package]
+name = "js_integration"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+dom = { path = "../dom" }
+layout = { path = "../layout" }
+css_parser = { path = "../css_parser" }
+html_parser = { path = "../html_parser" }
+boa_engine = "0.19"
+thiserror = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
+url = "2.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

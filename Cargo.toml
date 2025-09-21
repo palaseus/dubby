@@ -1,0 +1,45 @@
+[workspace]
+members = [
+    "dom",
+    "html_parser", 
+    "css_parser",
+    "layout",
+    "renderer",
+    "networking",
+    "renderer_wgpu",
+    "js_integration",
+    "browser_shell"
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Browser Engine Team"]
+license = "MIT"
+
+# Build profiles
+[profile.dev]
+opt-level = 0
+debug = true
+split-debuginfo = "unpacked"
+
+[profile.dev.package."*"]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+debug = false
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.release.package."*"]
+opt-level = 3
+
+# Future workspace members (commented out for now):
+# "css_parser",
+# "js_engine", 
+# "layout",
+# "networking"

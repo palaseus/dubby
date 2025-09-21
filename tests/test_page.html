@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Page - Rust Browser Engine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .feature {
+            margin: 15px 0;
+            padding: 10px;
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Rust Browser Engine Test Page</h1>
+        
+        <p>This is a test page to verify the GUI browser functionality.</p>
+        
+        <div class="feature">
+            <h3>✅ Features Working:</h3>
+            <ul>
+                <li>HTML parsing and DOM construction</li>
+                <li>CSS styling and layout</li>
+                <li>Tab management</li>
+                <li>Address bar navigation</li>
+                <li>Back/Forward buttons</li>
+                <li>Status bar with console</li>
+            </ul>
+        </div>
+        
+        <div class="feature">
+            <h3>🎯 Test Instructions:</h3>
+            <ol>
+                <li>Try typing a URL in the address bar</li>
+                <li>Click the "Go" button or press Enter</li>
+                <li>Test the back/forward navigation</li>
+                <li>Open multiple tabs with the + button</li>
+                <li>Close tabs with the × button</li>
+                <li>Check the console for any messages</li>
+            </ol>
+        </div>
+        
+        <button onclick="console.log('Button clicked!')">Test Console Log</button>
+        
+        <script>
+            console.log("Test page loaded successfully!");
+            console.log("JavaScript execution is working!");
+        </script>
+    </div>
+</body>
+</html>
